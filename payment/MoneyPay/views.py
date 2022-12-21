@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
 
-from .models import Account
+from .models import Account, Balance
 from .serializers import UserSerializer, GroupSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -107,9 +107,24 @@ def transfer(request):
             if account_sender is None or account_receiver is None:
                 return Response("Users account does not exist")
             else:
-                print(account_sender)
-                print(account_receiver)
-                return Response("valid till Now")
+                balance_sender = Balance.objects.filter(account=account_sender).first().get_balance()
+                balance_receiver = Balance.objects.filter(account=account_receiver).first().get_balance()
+                if balance_sender < int(amount):
+                    return Response("Insufficient Balance")
+                else:
+                    print(balance_sender)
+                    print(balance_receiver)
+                    amt_credited = Balance(account=account_receiver, amt_credit=amount, amt_debit=0, currency="INR")
+                    amt_debited = Balance(account=account_sender, amt_credit=0, amt_debit=amount, currency="INR")
+                    amt_credited.save()
+                    amt_debited.save()
+
+                    new_balance_sender = Balance.objects.filter(account=account_sender).first().get_balance()
+                    new_balance_receiver = Balance.objects.filter(account=account_receiver).first().get_balance()
+                    print(new_balance_sender)
+                    print(new_balance_receiver)
+
+                    return Response("valid till Now")
 
         # print(sender)
         # print(receiver)

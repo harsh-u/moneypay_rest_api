@@ -34,8 +34,8 @@ class Balance(models.Model):
     amt_debit = models.IntegerField()
     currency = models.CharField(max_length=3, blank=True)
 
-    def get_balance(self, amt_credit=None, amt_debit=None):
-        return (amt_credit - amt_debit) / 100.0  # It should always comes like 200.50, 20.00, that
+    def get_balance(self):
+        return self.amt_credit - self.amt_debit  # It should always comes like 200.50, 20.00, that
 
 class Method(models.Model):
     id = models.AutoField(primary_key=True)
