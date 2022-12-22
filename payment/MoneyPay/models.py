@@ -2,8 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
 
-
 # Create your models here.
+from django.db.models import Sum
 
 
 class User(AbstractUser):
@@ -25,17 +25,22 @@ class Account(models.Model):
     current_status = models.CharField(max_length=16, choices=status, default='Active')
 
     def __str__(self):
-         return self.user.first_name
+        return self.user.first_name
 
 
 class Balance(models.Model):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    amt_credit = models.IntegerField()
-    amt_debit = models.IntegerField()
+    account = models.ForeignKey(Account, unique=True, on_delete=models.CASCADE)
+    balance = models.DecimalField(max_digits=10, decimal_places=2)
     currency = models.CharField(max_length=3, blank=True)
 
-    def get_balance(self):
-        return self.amt_credit - self.amt_debit  # It should always comes like 200.50, 20.00, that
+    # def get_balance(self):
+    #     return self.balance  # It should always comes like 200.50, 20.00, that
+    #
+    # @staticmethod
+    # def get_current_balance(account):
+    #     balance = Transactions.objects.filter(receiver=account).aggregate(total=Sum('amount'))['total']
+    #     return balance
+
 
 class Method(models.Model):
     id = models.AutoField(primary_key=True)
@@ -49,12 +54,10 @@ class Method(models.Model):
     def __str__(self):
         return self.payment_type
 
+
 class Transactions(models.Model):
     transaction_id = models.AutoField(primary_key=True)
-    amount = models.IntegerField()
-    sender = models.ForeignKey(User, related_name="sender", on_delete=models.CASCADE)
-    receiver = models.ForeignKey(User, related_name="receiver", on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    sender = models.ForeignKey(Account, related_name="sender", on_delete=models.CASCADE)
+    receiver = models.ForeignKey(Account, related_name="receiver", on_delete=models.CASCADE)
     # method = models.ForeignKey(Method, on_delete=models.CASCADE)
-
-
-

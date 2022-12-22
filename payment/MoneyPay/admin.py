@@ -13,7 +13,7 @@ class AccountAdmin(admin.ModelAdmin):
 
 
 class BalanceAdmin(admin.ModelAdmin):
-    list_display = ('account', 'amt_credit', 'amt_debit', 'currency')
+    list_display = ('account', 'balance', 'currency')
 
 
 admin.site.register(User)  #

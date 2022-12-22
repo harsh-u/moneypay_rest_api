@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
 
-from .models import Account, Balance
+from .models import Account, Balance, Transactions
 from .serializers import UserSerializer, GroupSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -107,27 +107,42 @@ def transfer(request):
             if account_sender is None or account_receiver is None:
                 return Response("Users account does not exist")
             else:
-                balance_sender = Balance.objects.filter(account=account_sender).first().get_balance()
-                balance_receiver = Balance.objects.filter(account=account_receiver).first().get_balance()
-                if balance_sender < int(amount):
+                exists = Balance.objects.filter(account=account_sender).exists()
+                if not exists:
+                    balance = Balance(account=account_sender, balance=0.00, currency="INR")
+                    balance.save()
+                else:
+                    balance = Balance.objects.filter(account=account_sender).first()
+                if balance.balance < int(amount):
                     return Response("Insufficient Balance")
                 else:
-                    print(balance_sender)
-                    print(balance_receiver)
-                    amt_credited = Balance(account=account_receiver, amt_credit=amount, amt_debit=0, currency="INR")
-                    amt_debited = Balance(account=account_sender, amt_credit=0, amt_debit=amount, currency="INR")
-                    amt_credited.save()
-                    amt_debited.save()
+                    amount = int(amount)
 
-                    new_balance_sender = Balance.objects.filter(account=account_sender).first().get_balance()
-                    new_balance_receiver = Balance.objects.filter(account=account_receiver).first().get_balance()
-                    print(new_balance_sender)
-                    print(new_balance_receiver)
+                    exists = Balance.objects.filter(account=account_sender).exists()
+                    if not exists:
+                        balance = Balance(account=account_sender, balance=0.00, currency="INR")
+                        balance.save()
+                    else:
+                        Transactions(sender=account_sender, receiver=account_receiver, amount=amount).save()
+                        sender_account = Balance.objects.filter(account=account_sender).first()
+                        sender_account.balance -= amount
+                        sender_account.save()
 
-                    return Response("valid till Now")
+                        Transactions(sender=account_receiver, receiver=account_sender, amount=-1 * amount).save()
+                        exists = Balance.objects.filter(account=account_receiver).exists()
+                        if not exists:
+                            balance = Balance(account=account_receiver, balance=0.00, currency="INR")
+                            balance.save()
+                        receiver_account = Balance.objects.filter(account=account_receiver).first()
+                        receiver_account.balance += amount
+                        receiver_account.save()
 
-        # print(sender)
-        # print(receiver)
-        # print(amount)
-        # print(currency)
-        return Response("Valid request")
+                        print("I am here")
+                        new_balance_sender = Balance.objects.filter(account=account_sender).first().balance
+                        new_balance_receiver = Balance.objects.filter(account=account_receiver).first().balance
+                        print(new_balance_sender)
+                        print(new_balance_receiver)
+
+                        return Response("valid till Now")
+
+    return Response("Valid request")
