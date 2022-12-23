@@ -16,8 +16,12 @@ class BalanceAdmin(admin.ModelAdmin):
     list_display = ('account', 'balance', 'currency')
 
 
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ('transaction_id', 'amount', 'sender', 'receiver')
+
+
 admin.site.register(User)  #
 admin.site.register(Account, AccountAdmin)
 admin.site.register(Balance, BalanceAdmin)
-admin.site.register(Transactions)
+admin.site.register(Transactions, TransactionAdmin)
 admin.site.register(Method)

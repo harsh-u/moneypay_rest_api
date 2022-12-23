@@ -1,13 +1,16 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login
 from django.shortcuts import render
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
-
+from django.contrib.auth.decorators import login_required
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 from .models import Account, Balance, Transactions
 from .serializers import UserSerializer, GroupSerializer
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 import re
 
@@ -81,12 +84,10 @@ def check_user_data(user_data):
 
 
 @api_view(['GET', 'POST'])
-def transfer(request):
-    if request.method == 'GET':
-        print("I am in Get")
-        return Response("Not a valid request", status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'POST':
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def transfer(self, request):
+    if request.method == 'POST':
         print("INSIDE POST")
         sender = request.data.get("sender")
         receiver = request.data.get("receiver")
@@ -144,5 +145,4 @@ def transfer(request):
                         print(new_balance_receiver)
 
                         return Response("valid till Now")
-
-    return Response("Valid request")
+    return Response("InValid request")

@@ -12,6 +12,7 @@ urlpatterns = [
     # path("", views.index, name="index"),
     path('', include(router.urls)),
     path('user_api/', views.snippet_list),
+    # path('transfer/', views.transfer),
     path('transfer/', views.transfer),
     # path('transfer/<int:pk>/', views.transfer_detail, namespace="transfer"),
 
