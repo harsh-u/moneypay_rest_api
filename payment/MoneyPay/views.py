@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
 from django.contrib.auth.decorators import login_required
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from .models import Account, Balance, Transactions
@@ -84,11 +84,12 @@ def check_user_data(user_data):
 
 
 @api_view(['GET', 'POST'])
-@authentication_classes([SessionAuthentication, BasicAuthentication])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def transfer(self, request):
+def transfer(request):
     if request.method == 'POST':
         print("INSIDE POST")
+        print("Iam here", request.user)
         sender = request.data.get("sender")
         receiver = request.data.get("receiver")
         amount = request.data.get("amount")
@@ -96,7 +97,10 @@ def transfer(self, request):
 
         user = get_user_model()
 
+        print(sender)
         user_sender = user.objects.get(phone_number=sender)
+        if not(user_sender == request.user or request.user.is_superuser):
+            return Response("You are not authorized to make this transaction")
         user_receiver = user.objects.get(phone_number=receiver)
         if not user_sender and user_receiver:
             return Response("user not exist")

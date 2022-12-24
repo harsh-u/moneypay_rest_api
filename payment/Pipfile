@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 django = "*"
 djangorestframework = "*"
-
+six = "*"
 [dev-packages]
 
 [requires]
