@@ -100,12 +100,14 @@ def login(request):
         print(user_name)
         print(password)
         user = User.objects.get(username=user_name)
+        print(user, user.check_password(password))
+
         if not user or not user.check_password(password):
             return Response({'detail': 'Invalid Credentials or activate account'}, status=HTTP_404_NOT_FOUND)
 
         # TOKEN STUFF
         token, _ = Token.objects.get_or_create(user=user)
-
+        print(token)
         # token_expire_handler will check, if the token is expired it will generate new one
         is_expired, token = token_expire_handler(token)
 
@@ -148,6 +150,7 @@ def transfer(request):
             print(user_receiver)
             account_sender = Account.objects.filter(user=user_sender).first()
             account_receiver = Account.objects.filter(user=user_receiver).first()
+            print("accounts", account_sender, account_receiver)
             if account_sender is None or account_receiver is None:
                 return Response("Users account does not exist")
             else:
