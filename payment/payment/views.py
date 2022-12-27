@@ -1,3 +1,3 @@
 from django.http import HttpResponse
 def index(request):
-    return HttpResponse("jai shree ram")
+    return HttpResponse("Hello World")
