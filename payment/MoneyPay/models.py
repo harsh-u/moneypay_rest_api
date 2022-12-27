@@ -19,8 +19,8 @@ class Account(models.Model):
     account_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = [
-        ('1', 'Active'),
-        ('2', 'Closed'),
+        ('Active', 'Active'),
+        ('Closed', 'Closed'),
     ]
     current_status = models.CharField(max_length=16, choices=status, default='Active')
 

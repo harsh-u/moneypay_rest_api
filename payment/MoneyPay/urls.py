@@ -11,9 +11,10 @@ router.register(r'groups', views.GroupViewSet)
 urlpatterns = [
     # path("", views.index, name="index"),
     path('', include(router.urls)),
-    path('user_api/', views.snippet_list),
-    path('transfer/', views.transfer),
+
+    path('register/', views.register),
     path('login/', views.login),
+    path('transfer/', views.transfer),
 
 ]
 
