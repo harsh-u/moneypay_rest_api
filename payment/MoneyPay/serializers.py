@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
+from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
 
 User = get_user_model()
 
@@ -36,6 +36,12 @@ class RegisterSerializer(serializers.ModelSerializer):
             'last_name': {'required': True},
             'phone_number': {'required': True}
         }
+        validators = [
+            UniqueTogetherValidator(
+                queryset=User.objects.all(),
+                fields=['phone_number']
+            )
+        ]
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:

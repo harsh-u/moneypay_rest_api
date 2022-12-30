@@ -1,0 +1,13 @@
+--_curl_--
+>     "sender":"7777777777"
+> 
+--_curl_--
+>    "receiver":"123456889"
+> 
+--_curl_--
+>    "amount":500
+> 
+--_curl_--
+>    "currency":"INR"
+> 
+> 

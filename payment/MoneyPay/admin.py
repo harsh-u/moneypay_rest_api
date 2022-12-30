@@ -7,6 +7,10 @@ from .models import User, Account, Balance, Transactions, Method
 from django.contrib.auth.admin import UserAdmin
 
 
+class UserAdmin(admin.ModelAdmin):
+    list_display = ['username', 'phone_number', 'updated_at']
+
+
 class AccountAdmin(admin.ModelAdmin):
     list_display = ('user', 'current_status')
 

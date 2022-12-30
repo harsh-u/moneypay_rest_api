@@ -1,9 +1,11 @@
 import datetime
+import random
 import time
 from datetime import timedelta
+from django.db import transaction
 from django.utils import timezone
 from django.conf import settings
-from django.contrib.auth import get_user_model, login, authenticate
+from django.contrib.auth import get_user_model, login, authenticate, logout
 from django.shortcuts import render
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, serializers, generics
@@ -144,6 +146,7 @@ def login(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 def transfer(request):
     if request.method == 'POST':
+        # print(request.user)
 
         sender = request.data.get("sender")
         receiver = request.data.get("receiver")
@@ -165,38 +168,45 @@ def transfer(request):
             if account_sender is None or account_receiver is None:
                 return Response("Users account does not exist")
             else:
-                exists = Balance.objects.filter(account=account_sender).exists()
-                if not exists:
-                    balance = Balance(account=account_sender, balance=0.00, currency="INR")
-                    balance.save()
-                else:
-                    balance = Balance.objects.filter(account=account_sender).first()
-                if balance.balance < int(amount):
-                    return Response("Insufficient Balance")
-                else:
-                    amount = int(amount)
-
+                with transaction.atomic():
                     exists = Balance.objects.filter(account=account_sender).exists()
                     if not exists:
                         balance = Balance(account=account_sender, balance=0.00, currency="INR")
                         balance.save()
                     else:
-                        Transactions(sender=account_sender, receiver=account_receiver, amount=amount).save()
-                        sender_account = Balance.objects.filter(account=account_sender).first()
-                        sender_account.balance -= amount
-                        sender_account.save()
+                        balance = Balance.objects.filter(account=account_sender).first()
+                    if balance.balance < amount:
+                        return Response("Insufficient Balance")
+                    else:
 
-                        Transactions(sender=account_receiver, receiver=account_sender, amount=-1 * amount).save()
-                        exists = Balance.objects.filter(account=account_receiver).exists()
+                        exists = Balance.objects.filter(account=account_sender).exists()
                         if not exists:
-                            balance = Balance(account=account_receiver, balance=0.00, currency="INR")
-                            balance.save()
-                        receiver_account = Balance.objects.filter(account=account_receiver).first()
-                        receiver_account.balance += amount
-                        receiver_account.save()
+                            with transaction.atomic():
+                                balance = Balance(account=account_sender, balance=0.00, currency="INR")
+                                balance.save()
 
-                        # new_balance_sender = Balance.objects.filter(account=account_sender).first().balance
-                        # new_balance_receiver = Balance.objects.filter(account=account_receiver).first().balance
+                        else:
+                            with transaction.atomic():
+                                try:
+                                    Transactions(sender=account_sender, receiver=account_receiver, amount=amount).save()
+                                    sender_account = Balance.objects.filter(account=account_sender).first()
+                                    sender_account.balance -= amount
+                                    sender_account.save()
 
-                        return Response("valid till Now")
+                                    Transactions(sender=account_receiver, receiver=account_sender,
+                                                 amount=-1 * amount).save()
+                                    exists = Balance.objects.filter(account=account_receiver).exists()
+                                    if not exists:
+                                        balance = Balance(account=account_receiver, balance=0.00, currency="INR")
+                                        balance.save()
+                                    receiver_account = Balance.objects.filter(account=account_receiver).first()
+                                    receiver_account.balance += amount
+                                    receiver_account.save()
+
+                                    # new_balance_sender = Balance.objects.filter(account=account_sender).first().balance
+                                    # new_balance_receiver = Balance.objects.filter(account=account_receiver).first().balance
+
+                                    return Response("Transaction Successful.")
+                                except Exception as e:
+                                    raise e
     return Response("InValid request")

@@ -15,7 +15,6 @@ urlpatterns = [
     path('register/', views.register),
     path('login/', views.login),
     path('transfer/', views.transfer),
-
 ]
 
 app_name = "MoneyPay"
