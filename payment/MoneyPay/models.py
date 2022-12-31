@@ -29,7 +29,7 @@ class Account(models.Model):
 
 
 class Balance(models.Model):
-    account = models.ForeignKey(Account, unique=True, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, primary_key=True, on_delete=models.CASCADE)
     balance = models.DecimalField(max_digits=10, decimal_places=2)
     currency = models.CharField(max_length=3, blank=True)
 

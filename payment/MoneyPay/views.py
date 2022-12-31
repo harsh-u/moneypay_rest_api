@@ -1,31 +1,28 @@
-import datetime
-import random
-import time
 from datetime import timedelta
-from django.db import transaction
-from django.utils import timezone
+
 from django.conf import settings
-from django.contrib.auth import get_user_model, login, authenticate, logout
-from django.shortcuts import render
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User, Group
-from rest_framework import viewsets, serializers, generics
+from django.shortcuts import render
+from django.utils import timezone
 from rest_framework import permissions
-from django.contrib.auth.decorators import login_required
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework import status
+from rest_framework import viewsets, serializers, generics
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST, HTTP_200_OK
-from rest_framework.views import APIView
+
 from .models import Account, Balance, Transactions
 from .serializers import UserSerializer, GroupSerializer, RegisterSerializer
-from rest_framework import status
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.response import Response
-import re
-from rest_framework.authtoken.models import Token
 
 # from snippets.models import Snippet
 # from snippets.serializers import SnippetSerializer
 User = get_user_model()
+from django.db import transaction
+
 
 
 def index(request):
@@ -161,52 +158,22 @@ def transfer(request):
         if not user_sender and user_receiver:
             return Response("user not exist")
         else:
-
             account_sender = Account.objects.filter(user=user_sender).first()
             account_receiver = Account.objects.filter(user=user_receiver).first()
-
+            if account_sender == account_receiver:
+                return Response("You can not send money to yourself")
             if account_sender is None or account_receiver is None:
                 return Response("Users account does not exist")
             else:
                 with transaction.atomic():
-                    exists = Balance.objects.filter(account=account_sender).exists()
-                    if not exists:
-                        balance = Balance(account=account_sender, balance=0.00, currency="INR")
-                        balance.save()
-                    else:
-                        balance = Balance.objects.filter(account=account_sender).first()
-                    if balance.balance < amount:
-                        return Response("Insufficient Balance")
-                    else:
+                    sender_balance = Balance.objects.select_for_update().get(account=account_sender)
+                    receiver_balance = Balance.objects.select_for_update().get(account=account_receiver)
+                    print(account_receiver, account_sender)
+                    sender_balance.balance -= amount
+                    receiver_balance.balance += amount
+                    receiver_balance.save()
+                    sender_balance.save()
+                    Transactions(sender=account_sender, receiver=account_receiver, amount=amount).save()
+                    Transactions(sender=account_receiver, receiver=account_sender, amount=-1 * amount).save()
 
-                        exists = Balance.objects.filter(account=account_sender).exists()
-                        if not exists:
-                            with transaction.atomic():
-                                balance = Balance(account=account_sender, balance=0.00, currency="INR")
-                                balance.save()
-
-                        else:
-                            with transaction.atomic():
-                                try:
-                                    Transactions(sender=account_sender, receiver=account_receiver, amount=amount).save()
-                                    sender_account = Balance.objects.filter(account=account_sender).first()
-                                    sender_account.balance -= amount
-                                    sender_account.save()
-
-                                    Transactions(sender=account_receiver, receiver=account_sender,
-                                                 amount=-1 * amount).save()
-                                    exists = Balance.objects.filter(account=account_receiver).exists()
-                                    if not exists:
-                                        balance = Balance(account=account_receiver, balance=0.00, currency="INR")
-                                        balance.save()
-                                    receiver_account = Balance.objects.filter(account=account_receiver).first()
-                                    receiver_account.balance += amount
-                                    receiver_account.save()
-
-                                    # new_balance_sender = Balance.objects.filter(account=account_sender).first().balance
-                                    # new_balance_receiver = Balance.objects.filter(account=account_receiver).first().balance
-
-                                    return Response("Transaction Successful.")
-                                except Exception as e:
-                                    raise e
-    return Response("InValid request")
+    return Response("Success")
