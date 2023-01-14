@@ -1,5 +1,4 @@
 from datetime import timedelta
-
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User, Group
@@ -14,19 +13,26 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST, HTTP_200_OK
-
+from django.db import transaction
 from .models import Account, Balance, Transactions
 from .serializers import UserSerializer, GroupSerializer, RegisterSerializer
 
 # from snippets.models import Snippet
 # from snippets.serializers import SnippetSerializer
 User = get_user_model()
-from django.db import transaction
-
 
 
 def index(request):
     return render(request, "MoneyPay/index.html")
+
+
+def signup(request):
+    return render(request, "MoneyPay/register.html")
+
+
+def signin(request):
+    return render(request, "MoneyPay/login.html")
+
 
 
 class RegisterView(generics.CreateAPIView):
