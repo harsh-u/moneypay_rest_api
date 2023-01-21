@@ -1,10 +1,81 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Hello</title>
-</head>
-<body>
-<p>Hello world!!</p>
-</body>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="Dummy Banking System" />
+        <meta name="author" content="Maksudul Haque" />
+        <title>
+            Banking System
+        </title>
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
+
+    </head>
+    <body class="bg-gray-100">
+
+            <nav class="flex items-center justify-between flex-wrap bg-gray-800 p-6">
+    <div class="flex items-center flex-shrink-0 text-white mr-6">
+        <span class="font-semibold text-xl tracking-tight">Banking System</span>
+    </div>
+    <div class="block lg:hidden">
+        <button class="flex items-center px-3 py-2 border rounded text-white border-white-400 hover:text-white hover:border-white">
+            <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+        </button>
+    </div>
+    <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+
+            <div class="text-md lg:flex-grow"></div>
+            <div>
+                <a href="/moneypay/signin/" class="mr-2 inline-block font-medium text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-gray-800 hover:bg-white mt-4 lg:mt-0">Login</a>
+            </div>
+            <div>
+                <a href="/moneypay/signup/" class="inline-block font-medium text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-gray-800 hover:bg-white mt-4 lg:mt-0">Register</a>
+            </div>
+
+    </div>
+</nav>
+
+            <div class="lg:container lg:mx-auto">
+
+
+
+    <div class="container mx-auto flex flex-col md:flex-row items-center my-12 md:my-24">
+        <!--Left Col-->
+        <div class="flex flex-col w-full lg:w-1/2 justify-center items-start pt-12 pb-24 px-6">
+            <h1 class="font-bold text-4xl my-4">Banking System</h1>
+            <p class="leading-normal mb-4">
+                This is an Example web application created using django.
+                You can find the sourse code on <a href="https://github.com/saadmk11/banking-system">GitHub</a>
+            </p>
+            <div>
+            <a href="/moneypay/signup/" class="bg-transparent hover:bg-gray-800 text-gray-800 hover:text-white rounded shadow hover:shadow-lg py-2 px-4 border border-gray-900 hover:border-transparent">Register</a>
+            <a href="https://github.com/harsh-u/moneypay_rest_api" class="bg-transparent hover:bg-gray-800 text-gray-800 hover:text-white rounded shadow hover:shadow-lg py-2 px-4 border border-gray-900 hover:border-transparent">GitHub</a>
+            </div>
+        </div>
+        <!--Right Col-->
+        <div class="w-full lg:w-1/2 lg:py-6 text-center">
+            <h1 style="font-size: 12rem" class="font-black text-gray-800">$$$</h1>
+        </div>
+    </div>
+
+            </div>
+            <footer class="footer bg-gray-200 relative pt-1 border-b-2 mt-10">
+    <div class="container mx-auto px-6">
+        <div class="mt-5 flex flex-col items-center">
+            <div class="sm:w-2/3 text-center py-6">
+                <p class="text-md text-gray-900 font-bold mb-2">
+                    © 2023 by <a href="https://github.com/harsh-u" target="_blank">Harsh-U</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+    </body>
 </html>

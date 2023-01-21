@@ -22,9 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-bixm1b8=m)+i-pj+(=hn4m+qzxfgp2of4@imwd4#pk3ze!ry=u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -53,6 +53,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'payment.urls'
 
 TOKEN_EXPIRED_AFTER_SECONDS = 2628288
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

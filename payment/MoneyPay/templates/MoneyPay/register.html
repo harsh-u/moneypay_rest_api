@@ -1,67 +1,163 @@
+<!-- <form method="post" action="/moneypay/register/">-->
+<!--        <label for="username">USERNAME:</label>-->
+<!--        <input type="text" id="username" name="username" required>-->
+<!--        <label for="first_name">First Name:</label>-->
+<!--        <input type="text" id="first_name" name="first_name" required>-->
+<!--        <label for="last_name">Last Name:</label>-->
+<!--        <input type="text" id="last_name" name="last_name" >-->
+<!--        <label for="email">Email:</label>-->
+<!--        <input type="email" id="email" name="email" required>-->
+<!--        <label for="password">Password:</label>-->
+<!--        <input type="password" id="password" name="password" required>-->
+<!--        <label for="password2">Confirm Password:</label>-->
+<!--        <input type="password" id="password2" name="password2" required>-->
+<!--        <label for="phone_number">Phone Number:</label>-->
+<!--        <input type="tel" id="phone_number" name="phone_number" required>-->
+<!--        <input type="submit" value="Register">-->
+
+
+
+
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Banking Registration Form</title>
-    <style>
-        /* Add CSS styles for form layout and styling */
-        form {
-            width: 300px;
-            margin: 0 auto;
-        }
-        label {
-            display: block;
-            margin-bottom: 10px;
-        }
-        input[type="text"], input[type="email"], input[type="password"], input[type="tel"], input[type="date"] {
-            width: 100%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        select {
-            width: 100%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        input[type="submit"] {
-            width: 100%;
-            background-color: #4CAF50;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
-<body>
-    <form method="post" action="/moneypay/register/">
-        <label for="username">USERNAME:</label>
-        <input type="text" id="username" name="username" required>
-        <label for="firstname">First Name:</label>
-        <input type="text" id="firstname" name="firstname" required>
-        <label for="lastname">Last Name:</label>
-        <input type="text" id="lastname" name="lastname" >
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <label for="password2">Confirm Password:</label>
-        <input type="password" id="password2" name="password2" required>
-        <label for="phone">Phone Number:</label>
-        <input type="tel" id="phone" name="phone" required>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="Dummy Banking System" />
+        <meta name="author" content="Maksudul Haque" />
+        <title>
+            Banking System
+        </title>
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
 
 
-        <input type="submit" value="Register">
+    </head>
+    <body class="bg-gray-100">
+
+            <nav class="flex items-center justify-between flex-wrap bg-gray-800 p-6">
+    <div class="flex items-center flex-shrink-0 text-white mr-6">
+        <span class="font-semibold text-xl tracking-tight">Banking System</span>
+    </div>
+    <div class="block lg:hidden">
+        <button class="flex items-center px-3 py-2 border rounded text-white border-white-400 hover:text-white hover:border-white">
+            <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+        </button>
+    </div>
+    <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+
+            <div class="text-md lg:flex-grow"></div>
+            <div>
+                <a href="/moneypay/signin/" class="mr-2 inline-block font-medium text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-gray-800 hover:bg-white mt-4 lg:mt-0">Login</a>
+            </div>
+            <div>
+                <a href="/moneypay/signup/" class="inline-block font-medium text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-gray-800 hover:bg-white mt-4 lg:mt-0">Register</a>
+            </div>
+
+    </div>
+</nav>
+
+            <div class="lg:container lg:mx-auto">
+
+
+
+
+
+
+<h1 class="font-mono font-bold text-3xl text-center pb-5 pt-10">Register</h1>
+<hr />
+<div class="w-full mt-10">
+    <form method="post" action="/moneypay/register/" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <input type="hidden" name="csrfmiddlewaretoken" value="auvxFvRnADbPEoKeVLpYDWJP5hTbyYWALESu25CeteYKckswhv12G3BvpRvcUXyz">
+
+        <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="id_username">
+                    Username
+                </label>
+                <input type="username" name="username" maxlength="254" autofocus class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" required id="id_username">
+
+
+
+            </div>
+            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+               <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="id_email">
+                    Email
+                </label>
+                <input type="email" name="email" maxlength="254" autofocus class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" required id="id_email">
+
+            </div>
+
+        </div>
+
+        <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="id_first_name">
+                    First name
+                </label>
+                <input type="text" name="first_name" maxlength="150" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="id_first_name">
+
+            </div>
+            <div class="w-full md:w-1/2 px-3">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="id_last_name">
+                    Last name
+                </label>
+                <input type="text" name="last_name" maxlength="150" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="id_last_name">
+
+            </div>
+        </div>
+
+        <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="password">
+                    Password
+                </label>
+                <input type="password" name="password" autocomplete="new-password" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" required id="password">
+
+            </div>
+            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="password2">
+                    Password confirmation
+                </label>
+                <input type="password" name="password2" autocomplete="new-password" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" required id="password2">
+
+            </div>
+        </div>
+
+
+
+        <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="id_phone_number">
+                     Mobile Number
+                </label>
+                <input type="phone_number" name="phone_number" min="0" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" required id="id_phone_number">
+
+            </div>
+        </div>
+        <div class="flex items-center justify-between">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                Register
+            </button>
+        </div>
     </form>
-</body>
+</div>
+
+            </div>
+            <footer class="footer bg-gray-200 relative pt-1 border-b-2 mt-10">
+    <div class="container mx-auto px-6">
+        <div class="mt-5 flex flex-col items-center">
+            <div class="sm:w-2/3 text-center py-6">
+                <p class="text-md text-gray-900 font-bold mb-2">
+                    © 2023 by <a href="https://github.com/harsh-u" target="_blank">Harsh-U</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+    </body>
 </html>

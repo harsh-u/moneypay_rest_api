@@ -21,6 +21,14 @@ from .serializers import UserSerializer, GroupSerializer, RegisterSerializer
 # from snippets.serializers import SnippetSerializer
 User = get_user_model()
 
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return
+
 
 def index(request):
     return render(request, "MoneyPay/index.html")
@@ -32,7 +40,6 @@ def signup(request):
 
 def signin(request):
     return render(request, "MoneyPay/login.html")
-
 
 
 class RegisterView(generics.CreateAPIView):
@@ -97,6 +104,7 @@ def token_expire_handler(token):
 
 @api_view(['GET', 'POST'])
 @permission_classes([])
+@authentication_classes([CsrfExemptSessionAuthentication])
 def register(request):
     if request.method == 'POST':
         serializer = RegisterSerializer(data=request.data)
@@ -113,6 +121,7 @@ def register(request):
 
 @api_view(['GET', 'POST'])
 @permission_classes((AllowAny,))  # here we specify permission by default we set IsAuthenticated
+@authentication_classes([CsrfExemptSessionAuthentication])
 def login(request):
     if request.method == 'POST':
         login_serializer = UserloginSerializer(data=request.data)
