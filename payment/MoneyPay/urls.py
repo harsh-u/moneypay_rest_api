@@ -18,6 +18,7 @@ urlpatterns = [
     path('transfer/', views.transfer),
     path('signup/', views.signup),
     path('signin/', views.signin),
+    path('transaction/', views.transaction),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

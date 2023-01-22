@@ -42,6 +42,10 @@ def signin(request):
     return render(request, "MoneyPay/login.html")
 
 
+def transaction(request):
+    return render(request, "MoneyPay/transaction.html")
+
+
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
