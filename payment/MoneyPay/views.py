@@ -2,6 +2,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User, Group
+from django.db import transaction
 from django.shortcuts import render
 from django.utils import timezone
 from rest_framework import permissions
@@ -13,7 +14,6 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST, HTTP_200_OK
-from django.db import transaction
 from .models import Account, Balance, Transactions
 from .serializers import UserSerializer, GroupSerializer, RegisterSerializer
 
@@ -39,11 +39,15 @@ def signup(request):
 
 
 def signin(request):
-    return render(request, "MoneyPay/login.html")
+    return render(request, "MoneyPay/signin.html")
 
 
-def transaction(request):
-    return render(request, "MoneyPay/transaction.html")
+def money_transfer(request):
+    return render(request, "MoneyPay/money_transfer.html")
+
+
+def user_profile(request):
+    return render(request, "MoneyPay/user_profile.html")
 
 
 class RegisterView(generics.CreateAPIView):
@@ -149,6 +153,7 @@ def login(request):
         is_expired, token = token_expire_handler(token)
 
         user_serialized = UserSerializer(user)
+        # return render(request, "MoneyPay/user_profile.html")
 
         return Response({
             'user': user_serialized.data,

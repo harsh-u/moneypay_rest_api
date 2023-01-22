@@ -13,12 +13,17 @@ urlpatterns = [
     path('', include(router.urls)),
 
     path('home/', views.index, name="index"),
+
+    # api
     path('register/', views.register),
     path('login/', views.login),
     path('transfer/', views.transfer),
+
+
     path('signup/', views.signup),
     path('signin/', views.signin),
-    path('transaction/', views.transaction),
+    path('money_transfer/', views.money_transfer),
+    path('user_profile/', views.user_profile),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
