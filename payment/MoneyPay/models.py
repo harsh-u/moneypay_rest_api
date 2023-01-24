@@ -1,4 +1,5 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import AbstractUser, UserManager, User
 from django.core.validators import RegexValidator
 from django.db import models
 
@@ -6,12 +7,34 @@ from django.db import models
 from django.db.models import Sum
 
 
+# class MyUserManager(UserManager):
+#     def create_superuser(self, phone_number=None, password=None, **extra_fields):
+#         extra_fields.setdefault('is_staff', True)
+#         extra_fields.setdefault('is_superuser', True)
+#         extra_fields.setdefault('is_active', True)
+#         extra_fields.setdefault('phone_number', phone_number)
+#
+#         if extra_fields.get('is_staff') is not True:
+#             raise ValueError('Superuser must have is_staff=True.')
+#         if extra_fields.get('is_superuser') is not True:
+#             raise ValueError('Superuser must have is_superuser=True.')
+#
+#         return self.create_user(phone_number, password=password, **extra_fields)
+
+
+# class MyUser(User):
+#     phone_number = models.CharField(max_length=20, unique=True)
+#     objects = MyUserManager()
+#     USERNAME_FIELD = 'phone_number'
+
+
 class User(AbstractUser):
+    username = None
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: "
                                                                    "'+999999999'. Up to 15 digits allowed.")
     phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=False, unique=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    USERNAME_FIELD = 'phone_number'
     # created_at = models.DateTimeField(auto_now_add=True)  already available in AbstractUser as date_joined
 
 

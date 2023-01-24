@@ -57,7 +57,7 @@ class RegisterView(generics.CreateAPIView):
 
 
 class UserloginSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
+    phone_number = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
 
 
@@ -138,10 +138,10 @@ def login(request):
             return Response(login_serializer.errors, status=HTTP_400_BAD_REQUEST)
 
         # print(login_serializer.data)
-        user_name = login_serializer.data['username']
+        phone_number = login_serializer.data['phone_number']
         password = login_serializer.data['password']
 
-        user = User.objects.get(username=user_name)
+        user = User.objects.get(phone_number=phone_number)
 
         if not user or not user.check_password(password):
             return Response({'detail': 'Invalid Credentials or activate account'}, status=HTTP_404_NOT_FOUND)
@@ -182,6 +182,7 @@ def transfer(request):
         if not user_sender and user_receiver:
             return Response("user not exist")
         else:
+
             account_sender = Account.objects.filter(user=user_sender).first()
             account_receiver = Account.objects.filter(user=user_receiver).first()
             if account_sender == account_receiver:
@@ -189,7 +190,8 @@ def transfer(request):
             if account_sender is None or account_receiver is None:
                 return Response("Users account does not exist")
             else:
-                with transaction.atomic():
+
+                with  transaction.atomic():
                     sender_balance = Balance.objects.select_for_update().get(account=account_sender)
                     receiver_balance = Balance.objects.select_for_update().get(account=account_receiver)
                     print(account_receiver, account_sender)

@@ -60,11 +60,14 @@
 
 
         <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="id_username">
-                Username
-            </label>
-            <input class="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="username" id="id_username" type="text">
+
+             <label class="block text-gray-700 text-sm font-bold mb-2" for="id_phone_number">
+                     Mobile Number
+             </label>
+            <input type="tel" pattern="[0-9]{10}" name="phone_number" min="0" class="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required id="id_phone_number">
+
         </div>
+
 
 
         <div class="mb-4">
