@@ -1,9 +1,11 @@
 from datetime import timedelta
+
+import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User, Group
 from django.db import transaction
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from rest_framework import permissions
 from rest_framework import status
@@ -30,6 +32,10 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
         return
 
 
+def error_page(request):
+    return render(request, "MoneyPay/index.html")
+
+
 def index(request):
     return render(request, "MoneyPay/index.html")
 
@@ -45,9 +51,24 @@ def signin(request):
 def money_transfer(request):
     return render(request, "MoneyPay/money_transfer.html")
 
+def profile(request):
+    return render(request, "MoneyPay/money_transfer.html")
 
 def user_profile(request):
-    return render(request, "MoneyPay/user_profile.html")
+    phone_number = request.POST.get("phone_number")
+    password = request.POST.get("password")
+    print(phone_number)
+    print(password)
+    data = {"phone_number": phone_number, "password": password}
+    headers = {"Content-Type": "application/json"}
+    url = "http://localhost:8000/moneypay/login/"
+    response = requests.post(url, json=data, headers=headers)
+    print(response.status_code)
+    if response.status_code == 200:
+        return redirect("/moneypay/user_profile/")
+    else:
+        return render(request, "MoneyPay/index.html")
+
 
 
 class RegisterView(generics.CreateAPIView):

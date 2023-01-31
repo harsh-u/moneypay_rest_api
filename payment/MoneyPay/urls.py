@@ -24,6 +24,9 @@ urlpatterns = [
     path('signin/', views.signin),
     path('money_transfer/', views.money_transfer),
     path('user_profile/', views.user_profile),
+    path('profile/', views.profile),
+
+    path('error_page/', views.error_page),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
