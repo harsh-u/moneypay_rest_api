@@ -33,7 +33,7 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
 
 
 def error_page(request):
-    return render(request, "MoneyPay/index.html")
+    return render(request, "MoneyPay/error.html")
 
 
 def index(request):
@@ -54,20 +54,53 @@ def money_transfer(request):
 def profile(request):
     return render(request, "MoneyPay/money_transfer.html")
 
+
+def user_registration(request):
+    phone_number = request.POST.get("phone_number")
+    email = request.POST.get("email")
+    first_name = request.POST.get("first_name")
+    last_name = request.POST.get("last_name")
+    password = request.POST.get("password")
+    password2 = request.POST.get("password2")
+
+    data = {
+        "phone_number": phone_number,
+        "email": email,
+        "first_name": first_name,
+        "last_name": last_name,
+        "password": password,
+        "password2": password2
+    }
+    print(data)
+    headers = {"Content-Type": "application/json"}
+    url = "http://localhost:8000/moneypay/register/"
+    response = requests.post(url, json=data, headers=headers)
+    if response.status_code == 201:
+        return render(request, "MoneyPay/signin.html")
+    else:
+        return render(request, "MoneyPay/error.html")
+
+
 def user_profile(request):
     phone_number = request.POST.get("phone_number")
     password = request.POST.get("password")
-    print(phone_number)
-    print(password)
+    # print(phone_number)
+    # print(password)
     data = {"phone_number": phone_number, "password": password}
     headers = {"Content-Type": "application/json"}
     url = "http://localhost:8000/moneypay/login/"
     response = requests.post(url, json=data, headers=headers)
     print(response.status_code)
+
+    # TODO access  balance of user and render it to user profile
+    # user = User.objects.get(phone_number=phone_number)
+    # account =
+
+
     if response.status_code == 200:
-        return redirect("/moneypay/user_profile/")
+        return render(request, "MoneyPay/user_profile.html")
     else:
-        return render(request, "MoneyPay/index.html")
+        return render(request, "MoneyPay/error.html")
 
 
 

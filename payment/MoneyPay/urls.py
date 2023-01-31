@@ -24,6 +24,7 @@ urlpatterns = [
     path('signin/', views.signin),
     path('money_transfer/', views.money_transfer),
     path('user_profile/', views.user_profile),
+    path('user_registration/', views.user_registration),
     path('profile/', views.profile),
 
     path('error_page/', views.error_page),
