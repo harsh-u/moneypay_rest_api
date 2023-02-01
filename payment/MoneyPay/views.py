@@ -1,8 +1,7 @@
 from datetime import timedelta
-
 import requests
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import User, Group
 from django.db import transaction
 from django.shortcuts import render, redirect
@@ -18,6 +17,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST, HTTP_200_OK
 from .models import Account, Balance, Transactions
 from .serializers import UserSerializer, GroupSerializer, RegisterSerializer
+from django.contrib.auth import login as auth_login
 
 # from snippets.models import Snippet
 # from snippets.serializers import SnippetSerializer
@@ -51,8 +51,41 @@ def signin(request):
 def money_transfer(request):
     return render(request, "MoneyPay/money_transfer.html")
 
+
+def send_money(request):
+    sender = request.user.phone_number
+    receiver = request.POST.get("phone_number")
+    amount = request.POST.get("amount")
+    amount = int(amount)
+    currency = request.POST.get("currency")
+
+    data = {
+        "sender": sender,
+        "receiver": receiver,
+        "amount": amount,
+        "currency": currency
+    }
+
+    user = User.objects.get(phone_number=sender)
+    token = Token.objects.get(user=user)
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Token {token}"
+    }
+    url = "http://localhost:8000/moneypay/transfer/"
+    response = requests.post(url, json=data, headers=headers)
+    if response.status_code == 200:
+        return render(request, "MoneyPay/success.html")
+    elif response.status_code == 400:
+        return render(request, "MoneyPay/error.html")
+    else:
+        return render(request, "MoneyPay/error.html")
+
+
 def profile(request):
-    return render(request, "MoneyPay/money_transfer.html")
+    print(request.user)
+    return render(request, "MoneyPay/user_profile.html")
 
 
 def user_registration(request):
@@ -76,7 +109,7 @@ def user_registration(request):
     url = "http://localhost:8000/moneypay/register/"
     response = requests.post(url, json=data, headers=headers)
     if response.status_code == 201:
-        return render(request, "MoneyPay/signin.html")
+        return redirect('/moneypay/signin/')
     else:
         return render(request, "MoneyPay/error.html")
 
@@ -90,18 +123,28 @@ def user_profile(request):
     headers = {"Content-Type": "application/json"}
     url = "http://localhost:8000/moneypay/login/"
     response = requests.post(url, json=data, headers=headers)
-    print(response.status_code)
+    # print(response.status_code)
 
-    # TODO access  balance of user and render it to user profile
-    # user = User.objects.get(phone_number=phone_number)
-    # account =
+    user = User.objects.get(phone_number=phone_number)
+    account = Account.objects.filter(user=user).first()
+    balance = Balance.objects.filter(account=account)[0]
+    # print(user)
+    # print(account)
+    # print(balance)
 
+    # print(balance.balance)
+    auth_login(request, user)
+    # print(request.user)
 
+    data = {'user': user, 'balance': balance}
+    print(balance)
+    print(balance.balance)
     if response.status_code == 200:
-        return render(request, "MoneyPay/user_profile.html")
+        # return render(request, "MoneyPay/user_profile.html", data)
+        # TODO balance is not reflecting into the templates
+        return redirect('/moneypay/profile/', data)
     else:
         return render(request, "MoneyPay/error.html")
-
 
 
 class RegisterView(generics.CreateAPIView):
@@ -176,6 +219,8 @@ def register(request):
             user = User.objects.get(phone_number=phone_number)
             account = Account(user=user, current_status='Active')
             account.save()
+            balance = Balance(account=account, balance=0.00, currency='INR')
+            balance.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response("Invalid Request")
@@ -249,11 +294,15 @@ def transfer(request):
                     sender_balance = Balance.objects.select_for_update().get(account=account_sender)
                     receiver_balance = Balance.objects.select_for_update().get(account=account_receiver)
                     print(account_receiver, account_sender)
-                    sender_balance.balance -= amount
-                    receiver_balance.balance += amount
-                    receiver_balance.save()
-                    sender_balance.save()
-                    Transactions(sender=account_sender, receiver=account_receiver, amount=amount).save()
-                    Transactions(sender=account_receiver, receiver=account_sender, amount=-1 * amount).save()
+                    if sender_balance.balance > 0:
+                        sender_balance.balance -= amount
+                        receiver_balance.balance += amount
+                        receiver_balance.save()
+                        sender_balance.save()
+                        Transactions(sender=account_sender, receiver=account_receiver, amount=amount).save()
+                        Transactions(sender=account_receiver, receiver=account_sender, amount=-1 * amount).save()
+                        return Response(status=HTTP_200_OK)
+                    else:
+                        return Response(status=HTTP_400_BAD_REQUEST)
 
-    return Response("Success")
+    return Response("Invalid Request")
