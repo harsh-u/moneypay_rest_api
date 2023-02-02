@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser, UserManager, User
 from django.core.validators import RegexValidator
@@ -5,7 +7,6 @@ from django.db import models
 
 # Create your models here.
 from django.db.models import Sum
-
 
 # class MyUserManager(UserManager):
 #     def create_superuser(self, phone_number=None, password=None, **extra_fields):
@@ -26,6 +27,7 @@ from django.db.models import Sum
 #     phone_number = models.CharField(max_length=20, unique=True)
 #     objects = MyUserManager()
 #     USERNAME_FIELD = 'phone_number'
+from django.utils import timezone
 
 
 class User(AbstractUser):
@@ -83,4 +85,6 @@ class Transactions(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     sender = models.ForeignKey(Account, related_name="sender", on_delete=models.CASCADE)
     receiver = models.ForeignKey(Account, related_name="receiver", on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now)
+
     # method = models.ForeignKey(Method, on_delete=models.CASCADE)

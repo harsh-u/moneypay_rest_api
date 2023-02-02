@@ -52,6 +52,17 @@ def money_transfer(request):
     return render(request, "MoneyPay/money_transfer.html")
 
 
+def user_transaction(request):
+    print(request.user)
+    user = request.user
+    account = Account.objects.get(user=user)
+    transactions = Transactions.objects.filter(receiver=account)
+    data = {
+        "transactions": transactions,
+    }
+    return render(request, "MoneyPay/user_transaction.html", data)
+
+
 def send_money(request):
     sender = request.user.phone_number
     receiver = request.POST.get("phone_number")
@@ -84,7 +95,7 @@ def send_money(request):
 
 
 def profile(request):
-    print(request.user)
+    # print(request.user)
     return render(request, "MoneyPay/user_profile.html")
 
 
@@ -294,7 +305,7 @@ def transfer(request):
                     sender_balance = Balance.objects.select_for_update().get(account=account_sender)
                     receiver_balance = Balance.objects.select_for_update().get(account=account_receiver)
                     print(account_receiver, account_sender)
-                    if sender_balance.balance > 0:
+                    if sender_balance.balance > amount:
                         sender_balance.balance -= amount
                         receiver_balance.balance += amount
                         receiver_balance.save()
@@ -303,6 +314,9 @@ def transfer(request):
                         Transactions(sender=account_receiver, receiver=account_sender, amount=-1 * amount).save()
                         return Response(status=HTTP_200_OK)
                     else:
-                        return Response(status=HTTP_400_BAD_REQUEST)
+                        error = "Insufficient Balance"
+                        return Response({
+                            "error": error
+                        }, status=HTTP_404_NOT_FOUND)
 
     return Response("Invalid Request")

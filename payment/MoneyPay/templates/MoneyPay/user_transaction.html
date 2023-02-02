@@ -12,6 +12,22 @@
 
 
     </head>
+    <style>
+        table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: lightgray;
+}
+    </style>
     <body class="bg-gray-100">
 
             <nav class="flex items-center justify-between flex-wrap bg-gray-800 p-6">
@@ -41,7 +57,27 @@
 <h1 class="font-mono font-bold text-3xl text-center pb-5 pt-10">Current balance is : </h1>
 <hr>
 <div class="w-full mt-10">
+    <table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Recieved From</th>
+      <th>Sent To</th>
+      <th>Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for transaction in transactions %}
+    <tr>
+      <td>{{ transaction.created_at }}</td>
+      <td>{{ transaction.receiver }}</td>
+      <td>{{ transaction.sender }}</td>
+      <td>{{ transaction.amount }}</td>
+    </tr>
+  {% endfor %}
 
+  </tbody>
+</table>
 
 
 
