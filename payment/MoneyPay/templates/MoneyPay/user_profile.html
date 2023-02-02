@@ -27,18 +27,14 @@
 
             <div class="text-md lg:flex-grow"></div>
             <div>
-                <a href="/moneypay/home/" class="inline-block font-medium text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-gray-800 hover:bg-white mt-4 lg:mt-0">Logout</a>
+                <a href="/moneypay/logout/" class="inline-block font-medium text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-gray-800 hover:bg-white mt-4 lg:mt-0">Logout</a>
             </div>
 
     </div>
 </nav>
-
             <div class="lg:container lg:mx-auto">
 
-
-
-
-<h1 class="font-mono font-bold text-3xl text-center pb-5 pt-10">Hi {{user.first_name}}, Your Current Balance is :{{balance.balance}} </h1>
+<h1 class="font-mono font-bold text-3xl text-center pb-5 pt-10">Hi {{user.first_name}}, Your Current Balance is : {{balance.balance}} </h1>
 <hr>
 <div class="w-full mt-10">
 
@@ -54,13 +50,14 @@
         </div>
         <div class="mb-4 flex items-center justify-between" style="display: flex; justify-content: center; align-items: center; height: 100px; border: 3px  ;">
             <a href="/moneypay/user_transaction/">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                Transaction
-            </button>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Transaction
+                </button>
+            </a>
         </div>
 
-</div>
 
+</div>
             </div>
             <footer class="footer bg-gray-200 relative pt-1 border-b-2 mt-10">
     <div class="container mx-auto px-6">

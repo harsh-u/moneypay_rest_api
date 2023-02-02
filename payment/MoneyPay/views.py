@@ -2,6 +2,7 @@ from datetime import timedelta
 import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.db import transaction
 from django.shortcuts import render, redirect
@@ -18,6 +19,7 @@ from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST, HTTP
 from .models import Account, Balance, Transactions
 from .serializers import UserSerializer, GroupSerializer, RegisterSerializer
 from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as user_logout
 
 # from snippets.models import Snippet
 # from snippets.serializers import SnippetSerializer
@@ -50,6 +52,13 @@ def signin(request):
 
 def money_transfer(request):
     return render(request, "MoneyPay/money_transfer.html")
+
+
+@login_required
+def logout(request):
+    request.user.auth_token.delete()
+    user_logout(request)
+    return redirect('/moneypay/home/')
 
 
 def user_transaction(request):
