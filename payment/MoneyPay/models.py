@@ -1,12 +1,9 @@
-from datetime import datetime
-
-from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractUser, UserManager, User
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import PermissionsMixin
 from django.core.validators import RegexValidator
 from django.db import models
 
 # Create your models here.
-from django.db.models import Sum
 
 # class MyUserManager(UserManager):
 #     def create_superuser(self, phone_number=None, password=None, **extra_fields):
@@ -28,17 +25,80 @@ from django.db.models import Sum
 #     objects = MyUserManager()
 #     USERNAME_FIELD = 'phone_number'
 from django.utils import timezone
+from setuptools._entry_points import _
 
+class CustomUserManager(BaseUserManager):
 
-class User(AbstractUser):
-    username = None
+    def create_user(self, phone_number, password=None):
+
+        if phone_number is None:
+            raise TypeError('Users must have an phone number.')
+
+        user = self.model(phone_number=phone_number)
+        user.set_password(password)
+        user.save()
+
+        return user
+
+    def create_superuser(self, phone_number, password):
+
+        if password is None:
+            raise TypeError('Superusers must have a password.')
+
+        user = self.create_user(phone_number, password)
+        user.is_superuser = True
+        user.is_staff = True
+        user.save()
+
+        return user
+
+class User(AbstractBaseUser, PermissionsMixin):
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: "
                                                                    "'+999999999'. Up to 15 digits allowed.")
     phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=False, unique=True)
     updated_at = models.DateTimeField(auto_now=True)
     USERNAME_FIELD = 'phone_number'
-    # created_at = models.DateTimeField(auto_now_add=True)  already available in AbstractUser as date_joined
+    first_name = models.CharField(_("first name"), max_length=150, blank=True)
+    last_name = models.CharField(_("last name"), max_length=150, blank=True)
+    email = models.EmailField(_("email address"), blank=True)
+    is_staff = models.BooleanField(
+        _("staff status"),
+        default=False,
+        help_text=_("Designates whether the user can log into this admin site."),
+    )
+    is_active = models.BooleanField(
+        _("active"),
+        default=True,
+        help_text=_(
+            "Designates whether this user should be treated as active. "
+            "Unselect this instead of deleting accounts."
+        ),
+    )
+    date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
 
+    objects = CustomUserManager()
+
+    EMAIL_FIELD = "email"
+    REQUIRED_FIELDS = []
+
+    class Meta:
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
+        abstract = False
+
+    def clean(self):
+        super().clean()
+
+    def get_full_name(self):
+        """
+        Return the first_name plus the last_name, with a space in between.
+        """
+        full_name = "%s %s" % (self.first_name, self.last_name)
+        return full_name.strip()
+
+    def get_short_name(self):
+        """Return the short name for the user."""
+        return self.first_name
 
 class Account(models.Model):
     account_id = models.AutoField(primary_key=True)

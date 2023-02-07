@@ -8,7 +8,7 @@ from django.contrib.auth.admin import UserAdmin
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['username', 'phone_number', 'updated_at']
+    list_display = ['phone_number', 'updated_at']
 
 
 class AccountAdmin(admin.ModelAdmin):
