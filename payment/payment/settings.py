@@ -147,3 +147,8 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "MoneyPay.User"
+
+
+RAZOR_KEY_ID = 'rzp_test_PrYMZRFezagJi1'
+RAZOR_KEY_SECRET = 'QGd7gcQFkwZfuHMCI0LaXWvy'
+

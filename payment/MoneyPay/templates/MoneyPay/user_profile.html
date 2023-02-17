@@ -36,18 +36,18 @@
 
 <h1 class="font-mono font-bold text-3xl text-center pb-5 pt-10">Hi {{user.first_name}}, Your Current Balance is : {{balance.balance}} </h1>
 <hr>
-<div class="w-full mt-10">
 
+<div class="w-full mt-10">
 <!--        <input type="hidden" name="csrfmiddlewaretoken" value="0zXiTBJ99sRMsCCo7DbNHfcbIJaFe3poBJkfgbu023EH0ykGtnNRKm4R2jMGA21n">-->
 
-
         <div class="mb-4 flex items-center justify-between" style="display: flex; justify-content: center; align-items: center; height: 100px; border: 3px  ;">
-            <a href="/moneypay/money_transfer/">
+            <a href="/moneypay/add_money/">
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                     Money Transfer
+                    Add Money
                 </button>
             </a>
         </div>
+
         <div class="mb-4 flex items-center justify-between" style="display: flex; justify-content: center; align-items: center; height: 100px; border: 3px  ;">
             <a href="/moneypay/user_transaction/">
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
@@ -56,10 +56,16 @@
             </a>
         </div>
 
-
+        <div class="mb-4 flex items-center justify-between" style="display: flex; justify-content: center; align-items: center; height: 100px; border: 3px  ;">
+            <a href="/moneypay/money_transfer/">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                     Money Transfer
+                </button>
+            </a>
+        </div>
 </div>
             </div>
-            <footer class="footer bg-gray-200 relative pt-1 border-b-2 mt-10">
+<footer class="footer bg-gray-200 relative pt-1 border-b-2 mt-10">
     <div class="container mx-auto px-6">
         <div class="mt-5 flex flex-col items-center">
             <div class="sm:w-2/3 text-center py-6">
@@ -70,8 +76,6 @@
         </div>
     </div>
 </footer>
-
-
 
 
     </body>

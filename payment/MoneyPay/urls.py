@@ -11,6 +11,7 @@ router.register(r'groups', views.GroupViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    # path('admin/', admin.site.urls),
 
     path('home/', views.index, name="index"),
 
@@ -30,6 +31,10 @@ urlpatterns = [
     path('user_transaction/', views.user_transaction),
     path('logout/', views.logout),
     path('error_page/', views.error_page),
+    path('add_money/', views.add_money),
+    path('add_to_razorpay/', views.add_to_razorpay),
+    path('add_to_razorpay/paymenthandler/', views.paymenthandler, name='paymenthandler'),
+
 ]
 
 urlpatterns += staticfiles_urlpatterns()
