@@ -64,9 +64,9 @@ def add_money(request):
 
 def add_to_razorpay(request):
     currency = 'INR'
-    amount = request.POST.get("amount")  # Rs. 200
+    amount = int(request.POST.get("amount")) * 100 # Rs. 200
+    # amount  = int(amount*100)
 
-    metadata = {'amount': amount}
     # Create a Razorpay Order
     razorpay_order = razorpay_client.order.create(dict(amount=amount,
                                                        currency=currency,
@@ -80,7 +80,7 @@ def add_to_razorpay(request):
     context = {}
     context['razorpay_order_id'] = razorpay_order_id
     context['razorpay_merchant_key'] = settings.RAZOR_KEY_ID
-    context['razorpay_amount'] = amount
+    context['razorpay_amount'] = int(amount/100)
     context['currency'] = currency
     context['callback_url'] = callback_url
 
@@ -97,8 +97,7 @@ def paymenthandler(request):
             payment_id = request.POST.get('razorpay_payment_id', '')
             razorpay_order_id = request.POST.get('razorpay_order_id', '')
             signature = request.POST.get('razorpay_signature', '')
-            # amount = request.POST.get('razorpay_amount', '')
-            # amount = request.GET.get('amount')
+
             params_dict = {
                 'razorpay_order_id': razorpay_order_id,
                 'razorpay_payment_id': payment_id,
@@ -123,15 +122,16 @@ def paymenthandler(request):
                     user_account = Account.objects.filter(user=user).first()
                     print(user_account)
                     user_balance = Balance.objects.filter(account=user_account).first()
-                    print(user_balance)
-                    user_balance.balance += amount
+                    print(user_balance.balance)
+                    money = int(amount/100)
+                    user_balance.balance += money
                     print(user_balance.balance)
                     user_balance.save()
 
                     # render success page on successful caputre of payment
                     return render(request, 'MoneyPay/paymentsuccess.html')
                 except:
-                    
+
                     # if there is an error while capturing payment.
                     return render(request, 'MoneyPay/paymentfail.html')
             else:
