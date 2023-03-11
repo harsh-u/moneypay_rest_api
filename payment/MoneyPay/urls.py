@@ -10,10 +10,10 @@ router.register(r'groups', views.GroupViewSet)
 
 
 urlpatterns = [
-    path('', include(router.urls)),
     # path('admin/', admin.site.urls),
-
+    path('', views.index, name="index"),
     path('home/', views.index, name="index"),
+
 
     # api
     path('register/', views.register),
@@ -34,6 +34,7 @@ urlpatterns = [
     path('add_money/', views.add_money),
     path('add_to_razorpay/', views.add_to_razorpay),
     path('add_to_razorpay/paymenthandler/', views.paymenthandler, name='paymenthandler'),
+    path('pay_route', include(router.urls)),
 
 ]
 
