@@ -23,12 +23,10 @@ from . import views
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
-urlpatterns = [
 
-]
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name="head"),
+    path('', include('MoneyPay.urls', namespace='moneypay')),
     path('moneypay/', include('MoneyPay.urls', namespace='moneypay')),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
