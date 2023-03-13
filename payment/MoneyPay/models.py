@@ -25,7 +25,8 @@ from django.db import models
 #     objects = MyUserManager()
 #     USERNAME_FIELD = 'phone_number'
 from django.utils import timezone
-from setuptools._entry_points import _
+from django.utils.translation import gettext_lazy as _
+
 
 class CustomUserManager(BaseUserManager):
 
@@ -51,6 +52,7 @@ class CustomUserManager(BaseUserManager):
         user.save()
 
         return user
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: "
@@ -100,6 +102,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Return the short name for the user."""
         return self.first_name
 
+
 class Account(models.Model):
     account_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -110,7 +113,7 @@ class Account(models.Model):
     current_status = models.CharField(max_length=16, choices=status, default='Active')
 
     def __str__(self):
-        return self.user.first_name
+        return self.user.phone_number
 
 
 class Balance(models.Model):
